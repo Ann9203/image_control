@@ -12,7 +12,7 @@ import android.graphics.BitmapFactory;
  * 描述: 缩放压缩
 */
 
-public class ImageUtils {
+public class ImageResizeUtils {
 
     /**
      * 缩放压缩
@@ -22,7 +22,7 @@ public class ImageUtils {
      * @param maxH
      * @return
      */
-    public static Bitmap imageUtils(Context context,int  resID, int maxW, int maxH, boolean isAlph){
+    public static Bitmap imageUtils(Context context,int  resID, int maxW, int maxH, boolean isAlph, Bitmap reusableBitmap){
         Resources resources = context.getResources();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -33,10 +33,12 @@ public class ImageUtils {
         int h = options.outHeight;
 
         options.inSampleSize = getSampleSize(w, h, maxW, maxH); //设置一个压缩比例
-        if (isAlph){
+        if (!isAlph){
             options.inPreferredConfig = Bitmap.Config.RGB_565;
         }
         options.inJustDecodeBounds = false; //关闭
+        options.inMutable = true;
+        options.inBitmap = reusableBitmap;
         return BitmapFactory.decodeResource(resources, resID, options); //得到压缩的图片
 
     }
